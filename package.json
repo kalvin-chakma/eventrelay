@@ -1,10 +1,22 @@
 {
   "name": "eventrelay",
-  "module": "index.ts",
-  "type": "module",
   "private": true,
+  "version": "0.0.0",
+  "packageManager": "bun@1.2.21",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "check": "turbo run check"
+  },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "turbo": "^2.10.7"
   },
   "peerDependencies": {
     "typescript": "^5"
