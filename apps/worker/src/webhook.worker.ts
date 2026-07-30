@@ -1,7 +1,7 @@
 // apps/worker/src/webhook.worker.ts
 import { Worker, type Job } from "bullmq";
 import { eq, and } from "drizzle-orm";
-import { db, subscriptions } from "@eventrelay/db";
+import { db, subscriptions, deliveryLogs } from "@eventrelay/db";
 import type { DeliverEventJob } from "@eventrelay/shared-types";
 
 const REDIS_HOST = process.env.REDIS_HOST ?? "localhost";
@@ -68,6 +68,9 @@ async function processDeliverEvent(job: Job<DeliverEventJob>) {
     return;
   }
 
+
+  const currentAttempt = job.attemptsMade + 1;
+
   const outcomes: DeliveryOutcome[] = [];
 
   for (const sub of matchingSubscriptions) {
@@ -83,6 +86,14 @@ async function processDeliverEvent(job: Job<DeliverEventJob>) {
       success: result.success,
       responseCode: result.responseCode,
       error: result.error,
+    });
+
+    await db.insert(deliveryLogs).values({
+      eventId,
+      subscriptionId: sub.id,
+      status: result.success ? "success" : "failed",
+      attempt: currentAttempt,
+      responseCode: result.responseCode ?? 0,
     });
 
     if (result.success) {

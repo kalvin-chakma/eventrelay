@@ -2,8 +2,7 @@ import { defineHandler } from "shinro/app";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { db, events } from "@eventrelay/db";
-import { eventQueue } from "../../queue/event.queue";
-import { DELIVER_EVENT_JOB_NAME } from "@eventrelay/shared-types";
+import { enqueueDeliverEvent } from "../../queue/event.queue";
 
 const createEventSchema = z.object({
   type: z.string().min(1),
@@ -30,7 +29,7 @@ export const POST = defineHandler(
       return c.json({ error: "Failed to create event" }, 500);
     }
 
-    await eventQueue.add(DELIVER_EVENT_JOB_NAME, {
+    await enqueueDeliverEvent({
       eventId: event.id,
       userId: event.userId,
       type: event.type,
