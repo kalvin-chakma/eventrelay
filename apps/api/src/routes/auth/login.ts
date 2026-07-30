@@ -1,4 +1,3 @@
-// src/routes/auth/login.ts
 import { defineHandler } from "shinro/app";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";

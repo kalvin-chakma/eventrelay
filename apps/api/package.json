@@ -3,6 +3,10 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "exports": {
+    ".": "./src/server.ts",
+    "./client": "./.shinro/client.ts"
+  },
   "scripts": {
     "dev": "bun --watch --preload shinro/watch src/server.ts",
     "prepare": "shinro generate",
