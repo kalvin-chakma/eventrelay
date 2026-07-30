@@ -1,0 +1,16 @@
+{
+  "name": "@eventrelay/worker",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "bun run --watch src/webhook.worker.ts",
+    "start": "bun run src/webhook.worker.ts"
+  },
+  "dependencies": {
+    "@eventrelay/db": "workspace:*",
+    "@eventrelay/shared-types": "workspace:*",
+    "bullmq": "^5.0.0",
+    "drizzle-orm": "^0.45.2",
+    "ioredis": "^5.4.0"
+  }
+}
