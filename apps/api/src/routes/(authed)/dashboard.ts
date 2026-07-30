@@ -1,4 +1,3 @@
-// apps/api/src/routes/(authed)/dashboard.ts
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";

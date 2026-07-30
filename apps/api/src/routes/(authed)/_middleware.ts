@@ -1,4 +1,3 @@
-// src/routes/(authed)/_middleware.ts
 import { defineMiddleware } from "shinro/app";
 import { jwtVerify } from "jose";
 
