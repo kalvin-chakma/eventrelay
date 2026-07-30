@@ -26,6 +26,10 @@ export const POST = defineHandler(
       })
       .returning();
 
+    if (!event) {
+      return c.json({ error: "Failed to create event" }, 500);
+    }
+
     await eventQueue.add(DELIVER_EVENT_JOB_NAME, {
       eventId: event.id,
       userId: event.userId,
