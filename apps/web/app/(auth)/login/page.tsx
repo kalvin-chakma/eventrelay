@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { login, register } from "@/lib/api";
-import { setToken } from "@/lib/auth";
+import { useAuthStore } from "@/lib/auth-store";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -13,6 +13,8 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const storeLogin = useAuthStore((s) => s.login);
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
@@ -20,12 +22,12 @@ export default function LoginPage() {
     try {
       if (tab === "login") {
         const { token } = await login(email, password);
-        setToken(token);
+        storeLogin(token);
         router.push("/");
       } else {
         await register(email, password);
         const { token } = await login(email, password);
-        setToken(token);
+        storeLogin(token);
         router.push("/");
       }
     } catch (err) {
@@ -46,7 +48,10 @@ export default function LoginPage() {
           {(["login", "register"] as const).map((t) => (
             <button
               key={t}
-              onClick={() => { setTab(t); setError(""); }}
+              onClick={() => {
+                setTab(t);
+                setError("");
+              }}
               className={`flex-1 rounded-md py-2 text-sm font-medium transition-colors ${
                 tab === t
                   ? "bg-slate-800 text-white"
@@ -66,20 +71,24 @@ export default function LoginPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500"
+              className="rounded-lg border border-slate-300 px-3 py-2 text-sm text-black outline-none focus:border-slate-500"
               placeholder="you@example.com"
             />
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-slate-700">Password</label>
+            <label className="text-sm font-medium text-slate-700">
+              Password
+            </label>
             <input
               type="password"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500"
-              placeholder={tab === "register" ? "Min. 8 characters" : "••••••••"}
+              placeholder={
+                tab === "register" ? "Min. 8 characters" : "••••••••"
+              }
             />
           </div>
 
@@ -94,7 +103,11 @@ export default function LoginPage() {
             disabled={loading}
             className="mt-2 rounded-lg bg-slate-800 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
           >
-            {loading ? "Please wait…" : tab === "login" ? "Sign in" : "Create account"}
+            {loading
+              ? "Please wait…"
+              : tab === "login"
+                ? "Sign in"
+                : "Create account"}
           </button>
         </form>
       </div>
